@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
+
 public class Shared2Activity extends AppCompatActivity {
     private String sharedu=SharedActivity.shareduser;
     String result;
@@ -43,12 +46,7 @@ public class Shared2Activity extends AppCompatActivity {
         }catch (InterruptedException e){
             e.printStackTrace();
         }
-        TableLayout tableLayout1 = (TableLayout) findViewById(R.id.tablelayout5);
-        TableRow tablerow = new TableRow(getApplicationContext());
-        TextView date = new TextView(getApplicationContext());
-        date.setText(result);
-        tablerow.addView(date);
-        tableLayout1.addView(tablerow);
+
     }
 
     public class kv{
@@ -63,15 +61,60 @@ public class Shared2Activity extends AppCompatActivity {
         }
     }
 
+    public class getedData{
+        private double code;
+        private Object data;
+        private String message;
+
+        public void setCode(double code){
+            this.code=code;
+        }
+
+        public void setData(Object data){
+            this.data=data;
+        }
+
+        public void setMessage(String message){
+            this.message=message;
+        }
+
+        public Object getData(){
+            return data;
+        }
+
+        public double getCode(){
+            return code;
+        }
+
+        public String getMessage(){
+            return message;
+        }
+    }
+    @Data
+    public class AuthInfo{
+        private DataSet dataSet;
+        private String tagName;
+        private String leftInterval;
+        private String rightInterval;
+    }
+    @Data
+    public class DataSet{
+        private String name;
+    }
+    @Data
+    public class data1{
+        private ArrayList<AuthInfo> authorities;
+    }
     class PostThread extends Thread {
         kv kv1=new kv();
         public PostThread() {
             kv1.setTagName(sharedu);
         }
+        @SuppressLint("SetTextI18n")
         @Override
         public void run() {
-            HttpClient httpClient = new DefaultHttpClient();
-            String url = "http://10.0.0.203:8080/data/receivedDataSet";
+            HttpClient httpClient = new MyHttpClient(getApplicationContext());
+            String url = "https://10.0.0.203:443/data/receivedDataSet";
             //第二步：生成使用POST方法的请求对象
             HttpPost httpPost = new HttpPost(url);
             //NameValuePair对象代表了一个需要发往服务器的键值对
@@ -93,7 +136,29 @@ public class Shared2Activity extends AppCompatActivity {
                         BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(entity.getContent()));
                         result = reader.readLine();
-                        Log.d("HTTP", "00000:"+result);
+
+                        SecondActivity.getedData message=gson.fromJson(result, SecondActivity.getedData.class);
+                        json = gson.toJson(message.getData());
+                        Shared2Activity.data1 message1=gson.fromJson(json, Shared2Activity.data1.class);
+                        for (AuthInfo authInfo :message1.getAuthorities()){
+                            Log.d("HTTP", "00000:"+authInfo.getDataSet().getName());
+                            TableLayout tableLayout1 = (TableLayout) findViewById(R.id.tablelayout5);
+                            TableRow tablerow = new TableRow(getApplicationContext());
+                            TextView date = new TextView(getApplicationContext());
+                            String txt = "数据集名称："+authInfo.getDataSet().getName();
+                            if(authInfo.getTagName()!=null){
+                                txt+= "查询范围：" + authInfo.getTagName();
+                                if(authInfo.getLeftInterval()!=null || authInfo.getRightInterval()!= null){
+                                    txt+="区间"+
+                                            (authInfo.getLeftInterval()!=null?authInfo.getLeftInterval():"无限") +
+                                            "至"+
+                                            (authInfo.getRightInterval()!=null?authInfo.getRightInterval():"无限");
+                                }
+                            }
+                            date.setText(txt);
+                            tablerow.addView(date);
+                            tableLayout1.addView(tablerow);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -93,8 +93,8 @@ public class SharedActivity extends AppCompatActivity {
     class PostThread extends Thread {
         @Override
         public void run() {
-            HttpClient httpClient = new DefaultHttpClient();
-            String url = "http://10.0.0.203:8080/data/receivedUserList";
+            HttpClient httpClient = new MyHttpClient(getApplicationContext());
+            String url = "https://10.0.0.203:443/data/receivedUserList";
             //第二步：生成使用POST方法的请求对象
             HttpPost httpPost = new HttpPost(url);
             //NameValuePair对象代表了一个需要发往服务器的键值对

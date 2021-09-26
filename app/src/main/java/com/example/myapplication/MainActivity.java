@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void run() {
-            HttpClient httpClient = new DefaultHttpClient();
-            String url = "http://10.0.0.203:8080/data/createDataSet";
+            MyHttpClient httpClient = new MyHttpClient(getApplicationContext());
+            String url = "https://10.0.0.203:443/data/createDataSet";
             //第二步：生成使用POST方法的请求对象
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("token",LoginActivity.token);
@@ -290,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
     class PostThread1 extends Thread {
         @Override
         public void run() {
-            HttpClient httpClient = new DefaultHttpClient();
-            String url = "http://10.0.0.203:8080/data/ownedDataSetList";
+            HttpClient httpClient = new MyHttpClient(getApplicationContext());
+            String url = "https://10.0.0.203:443/data/ownedDataSetList";
             //第二步：生成使用POST方法的请求对象
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("token",LoginActivity.token);

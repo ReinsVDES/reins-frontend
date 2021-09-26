@@ -119,8 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            HttpClient httpClient = new DefaultHttpClient();
-            String url = "http://10.0.0.203:8080/Login";
+            MyHttpClient httpClient = new MyHttpClient(getApplicationContext());
+            String url = "https://10.0.0.203:443/Login";
             //第二步：生成使用POST方法的请求对象
             HttpPost httpPost = new HttpPost(url);
             //NameValuePair对象代表了一个需要发往服务器的键值对
