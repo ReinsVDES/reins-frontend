@@ -33,6 +33,7 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity{
     ArrayList<Object> blocks=new ArrayList<>();
+    Double code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,13 +236,21 @@ public class SearchActivity extends AppCompatActivity{
                     HttpResponse response = httpClient.execute(httpPost);
                     //第四步：检查相应的状态是否正常：检查状态码的值是200表示正常
                     if (response.getStatusLine().getStatusCode() == 200) {
-
+                        Log.d("HTTP", "PPPPP:" +response.getStatusLine().getStatusCode() );
                         //第五步：从相应对象当中取出数据，放到entity当中
                         HttpEntity entity = response.getEntity();
                         BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(entity.getContent()));
                         String result = reader.readLine();
+                        Log.d("HTTP", "PPPPP:" + result);
                         SecondActivity.getedData message=gson.fromJson(result, SecondActivity.getedData.class);
+                        code = message.getCode();
+                        Log.d("HTTP", "code:" + code);
+                        if(code==50000){
+                            Log.d("HTTP", "return");
+
+                            return;
+                        }
                         json = gson.toJson(message.getData());
                         SecondActivity.data1 message1=gson.fromJson(json, SecondActivity.data1.class);
                         Log.d("HTTP", "PPPPP:" + message1.getDatasets());
@@ -273,6 +282,15 @@ public class SearchActivity extends AppCompatActivity{
         }
         String json;
         Gson gson = new Gson();
+        if(code==50000){
+            TableLayout tableLayout1 = (TableLayout) findViewById(R.id.tablelayout3);
+            TableRow tablerow = new TableRow(getApplicationContext());
+            TextView date = new TextView(getApplicationContext());
+            date.setText("no auth");
+            tablerow.addView(date);
+            tableLayout1.addView(tablerow);
+            return;
+        }
         for (int i = 0; i < blocks.size(); i++) {
             json = gson.toJson(blocks.get(i));
             SecondActivity.data2 message2=gson.fromJson(json, SecondActivity.data2.class);

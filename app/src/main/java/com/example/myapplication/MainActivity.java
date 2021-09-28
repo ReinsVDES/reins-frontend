@@ -116,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void setVisible(){
-            visible=true;
-        }
-
-        public void setUnVisible(){
             visible=false;
         }
 

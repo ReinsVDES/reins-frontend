@@ -43,7 +43,7 @@ public class SecondActivity extends AppCompatActivity {
 //        while(data3.size()<=0) {
 //        }
         try {
-            sleep(300);
+            sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -227,7 +227,7 @@ public class SecondActivity extends AppCompatActivity {
 
 
         public PostThread1() {
-            kv1.setLeftInterval("2020-10-03");
+            kv1.setLeftInterval("2000-01-01");
             kv1.setRightInterval(null);
             kv1.setTagName("date");
             set1.setUserName(LoginActivity.username);
@@ -261,6 +261,7 @@ public class SecondActivity extends AppCompatActivity {
                         BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(entity.getContent()));
                         String result = reader.readLine();
+                        Log.d("HTTP", "PPPPP:" + result);
                         getedData message=gson.fromJson(result, getedData.class);
                         json = gson.toJson(message.getData());
                         data1 message1=gson.fromJson(json, data1.class);
